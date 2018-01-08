@@ -1,0 +1,13 @@
+<launch>
+    <rosparam param="use_gazebo">false</rosparam>
+    <include file="$(find ur_modern_driver)/launch/ur5_bringup_joint_limited.launch" pass_all_args="true" />
+    <include file="$(find ur5_moveit_config)/launch/ur5_moveit_planning_execution.launch">
+        <arg name="limited" value="true" />
+    </include>
+    <include file="$(find rwt_moveit)/launch/run.launch">
+        <arg name="fixed_frame" value="/world" />
+        <arg name="is_sim" value="true" />
+        <arg name="roswww_port" value="8000" />
+        <arg name="use_roswww" value="true" />
+    </include>
+</launch>

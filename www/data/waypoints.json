@@ -1,0 +1,17 @@
+[
+{ 
+    "name":"init",
+    "joints": ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"],
+    "position": [0.7518, -0.7076, -1.9129, -2.0390, 1.5589, -2.2766]
+},
+{ 
+    "name":"pre_pick",
+    "joints": ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"],
+    "position": [-0.7875, -1.6553, -1.8499, -1.2033, 1.5737, -2.6899]
+},
+{ 
+    "name":"pre_place",
+    "joints": ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"],
+    "position": [-1.9637, -1.5072, -1.9999, -1.2017, 1.5737, -2.7173]
+}
+]

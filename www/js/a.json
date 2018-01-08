@@ -1,0 +1,27 @@
+[
+{ 
+    "name": "60839",
+    "joints": ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"],
+    "position": [0.7740378975868225, -0.7023871580706995, -1.9132474104510706, -2.043795887623922, 1.5586998462677002, -2.2743704954730433],
+},
+{ 
+    "name": "65206",
+    "joints": ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"],
+    "position": [-0.009161297474996388, -0.9347050825702112, -1.385723892842428, -2.3387730757342737, 1.558675765991211, -2.2743824164019983],
+},
+{ 
+    "name": "71098",
+    "joints": ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"],
+    "position": [-0.7952325979815882, -1.5823290983783167, -1.012385670338766, -2.0641935507403772, 1.5601749420166016, -2.3012993971454065],
+},
+{ 
+    "name": "73455",
+    "joints": ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"],
+    "position": [-0.7952325979815882, -1.4711092154132288, -1.8966129461871546, -1.2912853399859827, 1.5601749420166016, -2.3012874762164515],
+},
+{ 
+    "name": "76326",
+    "joints": ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"],
+    "position": [0.1711781769990921, -1.471144978200094, -1.8966129461871546, -1.2912614981280726, 1.5601749420166016, -2.3012993971454065],
+}
+]

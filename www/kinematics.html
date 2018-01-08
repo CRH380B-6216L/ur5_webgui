@@ -1,0 +1,20 @@
+<script type="text/javascript" src="/ur5_rosgui/js/kinematics.js"></script>
+<script>
+const Kinematics = require('kinematics').default
+
+const geometry = [
+      [0.13585, 0, 0], // V0: 1x 1y
+      [-0.1197, 0.425, 0], // V1: 10y
+      [0, 0.39225, 0], // V2: 5x
+      [0.093, 0, 0], // V3: 3x
+      [0, 0.0465, 0], // V4: -3y
+    ]
+
+const RobotKin = new Kinematics(geometry)
+
+let angles = [1.57, 1.2, 0, 0.3, 2.2, 1.1]
+
+const pose = RobotKin.forward(...angles)[5]
+
+angles = RobotKin.inverse(...pose)
+</script>

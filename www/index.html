@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Interface -->
+<link rel="stylesheet" href="/ur5_rosgui/css/bootstrap.css">
+<link rel="stylesheet" href="/ur5_rosgui/css/bootstrap-slider.min.css">
+<script type="text/javascript" src="/ur5_rosgui/js/bootstrap-slider.min.js"></script>
+    <script type="text/javascript" src="/ur5_rosgui/js/vue.js"></script>
+<!-- ROS Utilities -->
+    <link rel="stylesheet"
+          type="text/css" href="/rwt_moveit/css/style.css" />
+<!--    <link rel="stylesheet"
+          href="js/jquery-ui/themes/base/jquery.ui.all.css" />-->
+    <!--link rel="stylesheet"
+          href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css"
+          /-->
+    <script type="text/javascript" src="/ur5_rosgui/js/jquery-3.2.1.slim.min.js"></script>
+    <script type="text/javascript" src="/ros3djs/three.js"></script>
+    <script type="text/javascript" src="/ros3djs/ColladaLoader2.js"></script>
+    <script type="text/javascript" src="/ros3djs/ColladaLoader.js"></script>
+    <script type="text/javascript" src="/ros3djs/STLLoader.js"></script>
+    <script type="text/javascript" src="/ros3djs/eventemitter2.min.js"></script>
+    <script type="text/javascript" src="/ur5_rosgui/js/FileSaver.js"></script>
+    <script type="text/javascript" src="/ur5_rosgui/js/roslib.js"></script>
+    <script type="text/javascript" src="/ur5_rosgui/js/ros3d.js"></script>
+    <script type="text/javascript" src="/ur5_rosgui/js/basic.js"></script>
+<title>UR5</title>
+<style>
+.movebtn tr td {
+    padding: 0px;
+}
+</style>
+</head>
+<body>
+<div id="app1">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">UR5</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav" v-show="pane != 'connect'">
+                <li class="nav-item active">
+                <a class="nav-link" href="#" @click="pane = 'default'">Visual <span class="sr-only">(current)</span></a>
+                </li>
+                <!--li class="nav-item">
+                <a class="nav-link disabled" href="#">Camera</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#">Programming</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#">Configuration</a>
+                </li>
+                <li class="nav-item pull-right">
+                <a class="nav-link" href="#">Help</a>
+                </li-->
+                <li class="nav-item pull-right">
+                <a class="nav-link" href="#" onclick="location.reload()">Logout</a>
+                </li>
+            </ul>
+            <!--span class="nav-text">Logged in as: {{username}}</span-->
+        </div>
+    </nav>
+    <div class="row" v-show="pane == 'connect'">
+        <div class="col-xs-12 col-sm-6 offset-sm-3 col-md-4 offset-md-4">
+            <h3><strong>Login (prototype)</strong></h3>
+            <div class="alert alert-danger" role="alert" v-show="loginerr != ''">
+                {{loginerr}}
+                <button type="button" class="close" aria-label="Close" @click="loginerr = ''">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Username</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter username" v-model="username">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" v-model="password">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Hostname of robot</label>
+                <input type="text" class="form-control" id="exampleInputHostname" placeholder="ws://xxx.xxx.xxx.xxx:9090" v-model="address">
+            </div>
+            <button type="submit" class="btn btn-primary" @click="connect()">Login and connect</button>
+        </div>
+    </div>
+    <div class="row" v-show="pane == 'default'">
+        <div class="col-xs-12 col-sm-6 col-md-9" id="urdf-container">
+            <div id="urdf"></div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-3">
+            <label><strong>MoveIt! Operation</strong></label>
+            <div class="form-group">
+                <button type="button" class="btn btn-warning mr-1" id="init">Reset</button>
+            <!--/div>
+            <div class="form-group">
+                <button type="button" class="btn btn-secondary mr-1" id="plan">Plan</button>
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-secondary mr-1 disabled" id="execute">Execute</button>
+            </div>
+            <div class="form-group"-->
+                <button type="button" class="btn btn-primary mr-1" id="moveit">Plan &amp; Execute</button>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" id="wp-name" class="form-control" placeholder="Waypoint name" aria-label="Waypoint name" value="New Waypoint">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-success disabled" id="addwp" onclick="add_waypoint()">Add Waypoint</button>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group collapse">
+                <select class="form-control form-control-sm" id="group" name="group">
+                </select>
+                <table>
+                    <tr><td></td><td>startState</td><td>goalState</td></tr>
+                    <tr>
+                        <td>
+                            View
+                        </td>
+                        <td>
+                            <input type="checkbox" name="start_state" id="start_state"/>
+                        </td>
+                        <td>
+                            <input type="checkbox" name="goal_state" id="goal_state" checked="checked"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Maniplation
+                        </td>
+                        <td>
+                            <input type="radio" name="manip" id="manip" value="0"/>
+                        </td>
+                        <td>
+                            <input type="radio" name="manip" id="manip" value="1" checked="checked"/>
+                        </td>
+                    </tr>
+                </table>
+                <li>IM-Size
+                <input type="number" name="number" id="im-size"
+                value="0.1" min="0" max="3" step="0.1"
+                onchange="im_size_callback()"/>
+                </li>
+            </div>
+            <div class="form-group">
+                <label><strong>Go to Waypoint</strong></label>
+                <div class="form-group">
+                    <input type="file" id="file-points" class="collapse" value="Import" @change="load_points">
+                    <button type="button" class="btn btn-primary mr-1" id="load-points" @click="load_trigger">Load waypoints</button>
+                    <button type="button" class="btn btn-primary mr-1" id="save-points" @click="save_points">Save waypoints</button>
+                </div>
+                <div class="form-group" id="btn-waypoints">
+                </div>
+            </div>
+            <div class="form-group">
+                <label><strong>Move the Robot</strong></label>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="movebtn" style="height: 60px; float:left">
+                            <tr>
+                                <td><img src="/ur5_rosgui/images/move_01.png"></td>
+                                <td><img src="/ur5_rosgui/images/move_02.png"></td>
+                                <td><img src="/ur5_rosgui/images/move_03.png"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/ur5_rosgui/images/move_05.png"></td>
+                                <td><img src="/ur5_rosgui/images/move_06.png"></td>
+                                <td><img src="/ur5_rosgui/images/move_07.png"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/ur5_rosgui/images/move_09.png"></td>
+                                <td><img src="/ur5_rosgui/images/move_10.png"></td>
+                                <td><img src="/ur5_rosgui/images/move_11.png"></td>
+                            </tr>
+                        </table>
+                        <table class="movebtn" style="height: 60px; float:left">
+                            <tr>
+                                <td><img src="/ur5_rosgui/images/move_04.png"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/ur5_rosgui/images/move_08.png"></td>
+                            </tr>
+                        </table>
+                        <table class="movebtn" style="height: 60px; float:left">
+                            <tr>
+                                <td><img src="/ur5_rosgui/images/rotate_01.png"></td>
+                                <td><img src="/ur5_rosgui/images/rotate_02.png"></td>
+                                <td><img src="/ur5_rosgui/images/rotate_03.png"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/ur5_rosgui/images/rotate_05.png"></td>
+                                <td><img src="/ur5_rosgui/images/rotate_06.png"></td>
+                                <td><img src="/ur5_rosgui/images/rotate_07.png"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/ur5_rosgui/images/rotate_09.png"></td>
+                                <td><img src="/ur5_rosgui/images/rotate_10.png"></td>
+                                <td><img src="/ur5_rosgui/images/rotate_11.png"></td>
+                            </tr>
+                        </table>
+                        <table class="movebtn" style="height: 60px; float:left">
+                            <tr>
+                                <td><img src="/ur5_rosgui/images/rotate_04.png"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/ur5_rosgui/images/rotate_08.png"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label><strong>TCP</strong></label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">X</span>
+                        <input class="form-control form-control-sm" type="text">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">Y</span>
+                        <input class="form-control form-control-sm" type="text">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">Z</span>
+                        <input class="form-control form-control-sm" type="text">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label><strong>&nbsp;</strong></label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">RX</span>
+                        <input class="form-control form-control-sm" type="text">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">RY</span>
+                        <input class="form-control form-control-sm" type="text">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">RZ</span>
+                        <input class="form-control form-control-sm" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12">
+                    <label><strong>Joints</strong></label>
+                    <div class="form-group" id="slider-pane">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+    <script type="text/javascript" src="/ur5_rosgui/js/app.js"></script>
+</html>

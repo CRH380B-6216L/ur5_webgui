@@ -1,0 +1,14 @@
+<launch>
+    <rosparam param="use_gazebo">true</rosparam>
+    <include file="$(find ur_gazebo)/launch/ur5_joint_limited.launch" />
+    <include file="$(find ur5_moveit_config)/launch/ur5_moveit_planning_execution.launch">
+        <arg name="sim" value="true" />
+        <arg name="limited" value="true" />
+    </include>
+    <include file="$(find rwt_moveit)/launch/run.launch">
+        <arg name="fixed_frame" value="/world" />
+        <arg name="is_sim" value="true" />
+        <arg name="roswww_port" value="8000" />
+        <arg name="use_roswww" value="true" />
+    </include>
+</launch>
