@@ -52,6 +52,10 @@ var waypointID = 0;
 var moveitLock = false;
 var driver = "/ur_driver";
 
+/** 
+ * Establish connection.
+ * @param {string} url - The url of the robot, like "ws://***:9090"
+ */
 function init(url) {
     // Connect to ROS.
     // console.log('Connect to ROS.');
@@ -662,11 +666,21 @@ function init(url) {
     });
 }
 
+/** 
+ * Plan (create) MoveIt! goal state and publish immediately. 
+ * @param {int} type - 0: create plan or 1: update slide value
+ * @param {bool} plan_only - No execution after planning
+ */
 function moveit_call(type, plan_only) {
     var msg = create_joint_position_msg(type, plan_only);
     moveit_pub.publish(msg);
 }
 
+/** 
+ * Plan (create) MoveIt! goal state. 
+ * @param {int} type - 0: create plan or 1: update slide value
+ * @param {bool} plan_only - No execution after planning
+ */
 function create_joint_position_msg(type, plan_only) {
 
     console.log('create_joint_position_msg');
@@ -733,6 +747,7 @@ function create_joint_position_msg(type, plan_only) {
     return msg;
 }
 
+/** Update the goal state of the robot. */
 function callback() {
     $("button#addwp").addClass("disabled");
     var msg = create_joint_position_msg(1, true);
@@ -744,6 +759,7 @@ function callback() {
     }
 }
 
+/** Part of procedures executing the planned goal state. */
 function joint_publish() {
     console.log('joint_publish');
     if(message_stock.length == 0) {
@@ -754,6 +770,7 @@ function joint_publish() {
     }
 }
 
+/** Initialize the buttons for waypoints. */
 function createWaypointButtons() {
     $("#btn-waypoints").empty();
     waypoints.forEach((element) => {
@@ -767,7 +784,7 @@ function createWaypointButtons() {
         $("button#save-points").addClass("collapse");
 }
 
-// create joint_publisher
+/** Initialize the sliders of the joints. */
 function createSliderView() {
     console.log('createSliderView');
     var i = 0;
@@ -804,6 +821,7 @@ function createSliderView() {
     });
 }
 
+/** (Currently not in use) Set the size of interactive marker. */
 function im_size_callback() {
     console.log('im_size_callback');
     var size = parseFloat($("#im-size").val());
@@ -827,6 +845,10 @@ function im_size_callback() {
     }
 }
 
+/** 
+ * Run a specific waypoint by its name. 
+ * @param {string} myname - The name of waypoint.
+ */
 function waypoint(myname) {
     point = waypoints.find((element) => {
         return element.name == myname;
@@ -841,6 +863,7 @@ function waypoint(myname) {
     }, 300);
 }
 
+/** Run all waypoints in order. */
 function run_all_waypoints() {
     if (waypoints.length == 0) {
         alert("No waypoints set!");
@@ -856,6 +879,7 @@ function run_all_waypoints() {
     waypoint(pname);
 }
 
+/** Add current position as a new waypoint at the end of waypoint list. */
 function add_waypoint() {
     var wp_name = $("input#wp-name")[0].value;
     if (wp_name == "") {
