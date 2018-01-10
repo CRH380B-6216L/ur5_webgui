@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>ur5_rosgui</name>
+  <name>ur5_webgui</name>
   <version>0.0.1</version>
   <description>The web-based GUI for Universal Robots UR5</description>
 

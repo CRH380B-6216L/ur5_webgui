@@ -30,7 +30,7 @@ catkin_make
 2. Run
 ⋅⋅⋅`roslaunch ur5_webgui ur5_real.launch robot_ip:=Ip.Of.Your.Robot`
 3. For an virtual environment, you can run `roslaunch ur5_webgui ur5_sim.launch` on your machine. If gazebo doesn't start correctly, just Ctrl-C and run it again.
-'
+
 ## Usage
 1. Get an another device (PC, laptop, tablet, smartphone or whatever) connected to Network A, open web browser and go to [http://hostname-of-machine-in-networkA:8000/ur5_webgui]
 5. Default username: `admin`, password: `admin` You can change `ur5_webgui/www/data/auth.js` to change the user data.
