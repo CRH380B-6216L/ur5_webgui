@@ -18,13 +18,18 @@ The assignment requires the design and development of a GUI that lets any possib
 - Follow the Agile method and meet in a weekly basis with his/her company tutor to inform any new challenge and the state of the project.
 
 ## Facts
+
+### ROS
+ROS is ...
+
+Communicating with ROS is ... services, topics, parameters ...
+
+### RobotWebTools (including roslibjs and ros3djs)
 RobotWebTools is ...
 
 roslibjs provides ...
 
 ros3djs provides a 3D visual of ROS in collaboration with THREE.js. 
-
-### RobotWebTools (including roslibjs and ros3djs)
 
 # Project Progress
 This project is splitted into two parts: prototyping and final product developing.
@@ -71,6 +76,12 @@ A similar webapp that already exists is found for this project. However, this we
 
 
 ## Development of Final Product
+
+### Rebuild User Interface
+
+### Login (prototype)
+
+### Adding, Saving and Loading Waypoints
 
 ## Unsolved Problems and Further Functionalities
 Because of time limit of the internship, some problems and functions are not solved in the project. The following aspects can be the goals of further project(s) based on this product.
