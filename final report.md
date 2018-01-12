@@ -19,10 +19,16 @@ The assignment requires the design and development of a GUI that lets any possib
 
 ## Facts
 
+### Universal Robots UR5
+
 ### ROS
 ROS is ...
 
 Communicating with ROS is ... services, topics, parameters ...
+
+### URDF and TF
+
+### MoveIt!
 
 ### RobotWebTools (including roslibjs and ros3djs)
 RobotWebTools is ...
@@ -81,7 +87,24 @@ A similar webapp that already exists is found for this project. However, this we
 
 ### Login (prototype)
 
-### Adding, Saving and Loading Waypoints
+### Adding, Going to, Saving and Loading of Waypoints
+When the goal state of MoveIt! planning executed successfully, the "Add Waypoints" button turns enabled and user can click to save the waypoint into the list (array). The array preserves all waypoints user saved. Each waypoint contains its name, the name and position of joints. The information of joints is extracted from the message of `/joint_states`.
+
+The waypoints will show as buttons with the name of each waypoint. By clicking it, the robot will move to the waypoint immediately. This is done by set the joint values of sliders as of waypoint, make a MoveIt! planning and execute it in one step. User can also let the robot moves via all waypoints in order by clicking "Run All Waypoints", which is done by planning and executing all the waypoints one by one. In this procedure, the completion of robot's each step is detected by subscribing from topic `/follow_joint_trajectory/result` or `/arm_controller/follow_joint_trajectory/result`, following with actions of planning and executing next waypoint in the list or step out after last waypoint is executed.
+
+The list of waypoints can be saved as a JSON file by clicking "Save Waypoints" button. The array of waypoints is converted to JSON and taken over by FileSaver.js for saving it to external file. The loading of file is splitted into two steps. The first step is trigger `click` event of a hidden file input to call the open file dialog when user clicks "Load Waypoints" button. The second step happens when a file is selected, which means the file input has changed. `FileLoader` in JavaScript is used for load the JSON file. After that, the JSON will be converted to array and overwrite the current one.
+
+### Receiving E-Stops and Protective Stops
+An emergency button is equipped on UR5 robot. When something emergency happens, the operator can press this button to force the robot stop and lock it. The protective stop is triggered when the robot unexceptedly deviates from its establised track in robot moving to help protective the robot from being damaged. These measures protect the safety of the robot, the operators and the production line. 
+
+The UR driver can also detect emergency stops and protective stops. When an emengency stop or a protective stop occurs, ROS will receive one of these following messages:
+
+```
+[ERROR][T] Emergency stop pressed!
+[ERROR][T] Robot is protective stopped!
+```
+
+According to the result of monitoring the topic `/rosout_agg`, these messages are found from a node called 'driver'. With this, the topic `/rosout_agg` is subscribed; However, only the messages which are typed as "Error" and come from "driver" will be responsed. The messages will be popped as a message box to tell the user the robot is emergency or protective stopped, stop the running waypoints and prevent user from adding new waypoint here.
 
 ## Unsolved Problems and Further Functionalities
 Because of time limit of the internship, some problems and functions are not solved in the project. The following aspects can be the goals of further project(s) based on this product.
