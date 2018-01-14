@@ -15,6 +15,7 @@ A Web based GUI for Universal Robots UR5 industrial robot
 ## Installation
 ```sh
 sudo apt-get install ros-$ROS_DISTRO-universal-robot
+sudo apt-get install ros-$ROS_DISTRO-rosbridge-server
 cd ~/catkin_ws/src
 git clone https://github.com/ThomasTimm/ur_modern_driver.git
 git clone https://github.com/CRH380B-6216L/rwt_ros.git
