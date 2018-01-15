@@ -81,11 +81,13 @@ The assignment requires the design and development of a GUI that lets any possib
 - Follow the Agile method and meet in a weekly basis with trainee’s company tutor to inform any new challenge and the state of the project.
 
 ## Analysis to the project
-### title tba
-This application can be splitted into 3 parts
+### Project Architecture
+The system where the application is inside can be splitted into 3 parts: the web application itself, ROS and the robot. ROS plays a middleman role in this system. ROS connects to the robot, read the joints and publish to the browser. The browser also sends the commands to ROS and ROS talks to robot about that.
 
-### DOT Framework
-In the project, the DOT framework is applied during research phase. The simple procedure of each research like below:
+In this system, rosbridge provides an interface to the browser in ROS. The webapp uses roslibjs to connect to ROS and ros3djs for visualization. ROS connects to the robot with UR Driver and carries out motion planning by MoveIt!. The webapp part with its connection to ROS is to be done in this project.
+
+### Research Methodology: DOT Framework
+In the project, the DOT framework is applied during research phase. The procedure of each research follows Rigor cycle. Just like below:
 1. Follow online tutorials and documents (Library, Lab)
 2. Try to build prototype (Workshop)
 3. Show the result on request (Showroom)
@@ -159,7 +161,7 @@ Bootstrap provides a responsive gridding system for webpages to make the website
 The code above means: 
 - When the width of window is less than 575 px, the main viewer fills the window in width, setting the controls below the main viewer. On the other hand, the height of main viewer is set to 50% of window height (this is done with JavaScript).
 - When When the width of window is more than 576 px but less than 767 px, the main viewer at left takes up 50% of window width, remaining half width for controls at right side. This ensures the right side is wide enough to fit the controls inside when using a device with small screen.
-- When the width of window is more than 768 px, the main viewer at left takes up 75% of window width.
+- When the width of window is more than 768 px, the main viewer at left takes up 75% of window width to maximize the main viewer.
 
 Bootstrap also contains different useful controls and a layout system for webpages. These functions made the web page better-looking but less workload.
 
