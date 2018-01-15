@@ -18,13 +18,12 @@ Engineering students in semester 7 will attend the automation & robotics class a
 
 # Project Overview
 ## Facts
-
 ### Universal Robots UR5
 Universal Robots is a Danish robotics company founded in 2005. It provides UR3, UR5 and UR10 series of industrial robots to meet worldwide industrial automation requirements in different levels. UR5 is a typical 6-axis industrial robot. The maximum payload of UR5 is 5 kg and its work radius is 850 mm. (Universal Robots A/S, 2009)
 
 Fontys Robotics Laboratory equips two UR5 robots, one of which is used for this project.
 
-### ROS
+### Robot Operating Sytem
 The Robot Operating System (ROS) is a flexible framework for writing robot software. It is a collection of tools, libraries, and conventions that aim to simplify the task of creating complex and robust robot behavior across a wide variety of robotic platforms. (About ROS, n.d.)
 
 There are many ways to communicate with ROS:
@@ -33,17 +32,39 @@ There are many ways to communicate with ROS:
 - Get or set parameters.
 
 ### URDF and TF
+The Unified Robot Description Format (URDF) is an XML specification to describe a robot. The specification covers kinematic and dynamic description of the robot, visual representation of the robot and collision model of the robot. The description of a robot consists of a set of link elements, and a set of joint elements connecting the links together. So a typical robot description looks something like this: 
+```xml
+<robot name="pr2">
+  <link> ... </link>
+  <link> ... </link>
+  <link> ... </link>
+
+  <joint>  ....  </joint>
+  <joint>  ....  </joint>
+  <joint>  ....  </joint>
+</robot>
+```
+
+The tf library was designed to provide a standard way to keep track of coordinate frames and transform data within an entire system such that individual component users can be confident that the data is in the coordinate frame that they want without requiring knowledge of all the coordinate frames in the system. During early development of the Robot Operating System (ROS), keeping track of coordinate frames was identified as a common pain point for developers.
 
 ### MoveIt!
+MoveIt! is state of the art software for mobile manipulation, incorporating the latest advances in motion planning, manipulation, 3D perception, kinematics, control and navigation. It provides an easy-to-use platform for developing advanced robotics applications, evaluating new robot designs and building integrated robotics products for industrial, commercial, R&D and other domains. MoveIt! is the most widely used open-source software for manipulation and has been used on over 65 robots.
 
-### RobotWebTools (including roslibjs and ros3djs)
-RobotWebTools is ...
+The figure above shows the high-level system architecture for the primary node provided by MoveIt! called move_group. This node serves as an integrator: pulling all the individual components together to provide a set of ROS actions and services for users to use.
 
-roslibjs uses WebSockets to connect with rosbridge (the server side for ROS) and provides publishing, subscribing, service calls, actionlib, TF, URDF parsing, and other essential ROS functionality. Functionalities of connection, publishing, subscribing, service calls and parameter updating are used in this project.
+move\_group is a ROS node. It uses the ROS param server to get the URDF, SRDF and MoveIt! configuration. move_group talks to the robot through ROS topics and actions. It communicates with the robot to get current state information (positions of the joints, etc.), to get point clouds and other sensor data from the robot sensors and to talk to the controllers on the robot.
 
-ros3djs provides a 3D visual of ROS in collaboration with THREE.js. 
+### Robot Web Tools
+RobotWebTools is a collection of open-source modules and tools for building web-based robot apps. Their tools allow web applications to interface with a variety of robots running middleware like the popular Robot Operating System (ROS) using the latest in HTML5 and JavaScript. roslibjs and ros3djs are used in this project with the rosbridge on server-side.
+
+rosbridge communicates ROS data messages contained in the JavaScript Object Notation (JSON) for straightforward marshalling and demarshalling. Through its use of WebSockets (a protocol built on top of HTTP), rosbridge can be readily used with modern web browsers without the need for installation. This fact combined with its portability and pervasive use makes the web browser an ideal platform for human-robot interaction.
+
+roslibjs uses WebSockets to connect with rosbridge and provides publishing, subscribing, service calls, actionlib, TF, URDF parsing, and other essential ROS functionality. Functionalities of connection, publishing, subscribing, service calls and parameter updating are used in this project.
+
+ros3djs is the standard JavaScript 3D visualization manager for ROS. It is build ontop of roslibjs and utilizes the power of three.js. Many standard ROS features like interactive markers, URDFs, and maps are included as part of this library.
 
 ### Vue.js
+Vue (pronounced /vjuː/, like view) is a progressive framework for building user interfaces. Unlike other monolithic frameworks, Vue is designed from the ground up to be incrementally adoptable. The core library is focused on the view layer only, and is easy to pick up and integrate with other libraries or existing projects. On the other hand, Vue is also perfectly capable of powering sophisticated Single-Page Applications when used in combination with modern tooling and supporting libraries.
 
 ## Target of Project
 The project is aimed to research, design and develop a web based graphical user interface (GUI) that lets the users communicate, program and visualize Industrial robots from different brands that are connected to it. The web based GUI is developed using Javascript, HTML5, CSS and roslibjs for the front-end and it must connect to rosbridge as the server running in ROS (Robot operating system).
@@ -52,7 +73,7 @@ Industrial robots have its own GUI to let users program and interact with the ro
 
 The assignment requires the design and development of a GUI that lets any possible user easily program and interact with any industrial robot connected through rosbridge in ROS to the GUI.
 
-## Goals and Objectives
+### Goals and Objectives
 - Design following Human-computer interaction (HCI) patterns for industrial robots and that communicates to the ROS server using roslibjs.
 - Let the user visualize in 3D the movement that the industrial robot will perform.
 - Make sure the app can run efficiently in different modern browsers and devices (laptops, tablets and phones).
@@ -60,11 +81,14 @@ The assignment requires the design and development of a GUI that lets any possib
 - Follow the Agile method and meet in a weekly basis with trainee’s company tutor to inform any new challenge and the state of the project.
 
 ## Analysis to the project
+### title tba
+This application can be splitted into 3 parts
+
 ### DOT Framework
 In the project, the DOT framework is applied during research phase. The simple procedure of each research like below:
-1.	Follow online tutorials and documents (Library, Lab)
-2.	Try to build prototype (Workshop)
-3.	Show the result on request (Showroom)
+1. Follow online tutorials and documents (Library, Lab)
+2. Try to build prototype (Workshop)
+3. Show the result on request (Showroom)
 
 # Project Progress
 This project is splitted into two parts: prototyping and final product developing.
@@ -88,39 +112,79 @@ This prototype reproduces the field and the turtle in it, which is built in such
   - `div#turtle`: sets the position and rotation, contains the image of turtle
     - `img#turtleImage`: the turtle that can be seen in the webpage
 
-By subscribing `turtle1/pose` topic the display refreshes to show the state of turtlesim in real-time. 
+The background of the field is defined by getting the parameters `background_b` for blue channel, `background_g` for green channel and `background_r` for red channel. By subscribing `turtle1/pose` topic the display refreshes to show the state of turtlesim in real-time.
 
-The control panel provides the functionalities of moving 1 step, moving constantly and stop, changing pen color including turning pen on or off and change background color.
+The control panel provides the functionalities of moving 1 step, moving constantly and stop, changing pen color including turning pen on or off and change background color. These functionailties are achieved in different ways:
+- **Move**: Publish linear and angular velocity to the topic `/turtleX/cmd_vel`;
+- **Change pen color**: Call the service `turtleX/set_pen` with pen color, width and on or off;
+- **Change background color**: Set parameters`background_b`, `background_g` and `background_r`, then call service `clear` to make changes effective.
 
-roslibjs is introduced to let the prototype communicate with ROS. It is used to connect the prototype to ROS, subscribe the topics of turtle’s position, pen color and background color, publish the topic of move, call the service of ***. The prototype also uses setInterval() to achieve letting the turtle move constantly by publishing the same topic per every second and stops it by using clearInterval() when user clicks “Stop” button.
+roslibjs is introduced to let the prototype communicate with ROS. It is used to connect the prototype to ROS, subscribe the topics of turtle’s position, publish the topic of move, call the service of clearing field or setting the pen properties, and get or set background color. The prototype also uses `setInterval()` to achieve letting the turtle move constantly by publishing the same topic per every second and stops it by using `clearInterval()` when user clicks “Stop” button.
 
-This prototype was done in the first month of the project period. By working on it, we had a general understanding of ROS and how to use roslibjs to communicate between ROS and the browser.
+This prototype was done in the first month of the project period. By working on it, we had a general understanding of ROS and how to use roslibjs to communicate between ROS and the browser, which is helpful for working on further things.
 
 ### Prototype 1: URDF Online Viewer
 This prototype is an application of usage of ros3djs. It presents the status of connected robot by showing its 3D-model in real-time in the browser. 
 
 ros3djs provides a 3D visual of robot in collaboration with THREE.js. 
 
+send a http get request for iframe
+
 ### Prototype 2: MoveIt! Web-Based Planner
 MoveIt! is a very popular motion planning tool in ROS, which is also used in this project. This prototype lets the browser contact MoveIt! to make movement to the robot.
 
-A similar webapp that already exists is found for this project. However, this webapp could not be used at first. This webapp is called rwt_moveit, which is created by Tokyo Opensource Robotics Kyokai Assosiation, and based on Denso VS060 industrial robot. We contacted them for the solution of the problem and finally found the way to solve it.
+A similar webapp that already exists is found for this project. However, this webapp could not be used at first. This webapp is called rwt\_moveit, which is part of visualization_rwt created by Tokyo Opensource Robotics Kyokai Assosiation, and based on Denso VS060 industrial robot. We contacted them for the solution of the problem and finally found the way to solve it.
 
+This application has a webpage and some nodes written in Python. The nodes 
 ...
 
 ## Development of Final Product
+The final product was expanded from the prototype 2 with a lot of changes applied on it. The major changes were rebuilding user interfaces, login page, simple programming based on waypoints and response of robot's abnormal stop.
 
 ### Rebuild User Interface
+The application is designed for running on any device such as PC, laptop, tablet, phone, etc. So the user interface should be fit within all devices. However, the UI for prototype 2 couldn't meet this requirement. So we rebuilt the UI with Bootstrap.
+
+Bootstrap provides a responsive gridding system for webpages to make the website fit with any device. 
+```html
+<div class="row">
+  <div class="col-xs-12 col-sm-6 col-md-9" id="urdf-container">
+    ..
+  </div>
+  <div class="col-xs-12 col-sm-6 col-md-3">
+    ..
+  </div>
+</div>
+```
+
+The code above means: 
+- When the width of window is less than 575 px, the main viewer fills the window in width, setting the controls below the main viewer. On the other hand, the height of main viewer is set to 50% of window height (this is done with JavaScript).
+- When When the width of window is more than 576 px but less than 767 px, the main viewer at left takes up 50% of window width, remaining half width for controls at right side. This ensures the right side is wide enough to fit the controls inside when using a device with small screen.
+- When the width of window is more than 768 px, the main viewer at left takes up 75% of window width.
+
+Bootstrap also contains different useful controls and a layout system for webpages. These functions made the web page better-looking but less workload.
+
+To make a better viewer, we also changed the main viewer to light theme by setting the color of background and the grid:
+```javascript
+var viewer = new ROS3D.Viewer({
+    divID : 'urdf',
+    width : width,
+    height : height,
+    antialias : true,
+    background: '#cccccc'
+});
+
+viewer.addObject(new ROS3D.Grid({color: '#666666'}));
+```
 
 ### Login (prototype)
 A login page is introduced into this application. It prevents unauthorized personnel from improperly using this application and any personal injury or property damage caused by that.
 
-The code of this part is under Vue.js pattern. That means the inputs of username and password are linked with the related variables and the latter updates when the inputs change. When user clicks “Login and connect” button, It checks if the user exists and the password is correct. Currently, as a prototype, the user data is hard-coded into the script file.
+The code of this part is under Vue.js pattern. That means the inputs of username and password are linked with the related variables and the latter updates when the inputs change. When user clicks “Login and connect” button, It checks if the user exists and the password is correct. Currently, as a prototype, the user data is hard-coded into the script file. If the username and password match, Vue will hide the login interface and show the main interface. Meanwhile, the 
 
 ### Adding, Going to, Saving and Loading of Waypoints
 When the goal state of MoveIt! planning executed successfully, the “Add Waypoints” button turns enabled and user can click to save the waypoint into the list (array). The array preserves all waypoints user saved. The waypoints will show as buttons with the name of each waypoint. By clicking it, the robot will move to the waypoint immediately. User can also let the robot moves via all waypoints in order by clicking “Run All Waypoints”.
 
-The information of joints is extracted from the message of /joint_states with each waypoint’s name, its joints’ names and positions. This is done by set the joint values of sliders as of waypoint, make a MoveIt! planning and execute it in one step. which is done by planning and executing all the waypoints one by one.  In this procedure, the completion of robot's each step is detected by subscribing from topic `/follow_joint_trajectory/result` or `/arm_controller/follow_joint_trajectory/result`, following with actions of planning and executing next waypoint in the list or step out after last waypoint is executed.
+The information of joints is extracted from the message of `/joint_states` with each waypoint’s name, its joints’ names and positions. This is done by set the joint values of sliders as of waypoint, make a MoveIt! planning and execute it in one step. which is done by planning and executing all the waypoints one by one.  In this procedure, the completion of robot's each step is detected by subscribing from topic `/follow_joint_trajectory/result` or `/arm_controller/follow_joint_trajectory/result`, following with actions of planning and executing next waypoint in the list or step out after last waypoint is executed.
 
 The list of waypoints can be saved as a JSON file by clicking "Save Waypoints" button. The array of waypoints is converted to JSON and taken over by FileSaver.js for saving it to external file. The loading of file is splitted into two steps. The first step is trigger `click` event of a hidden file input to call the open file dialog when user clicks "Load Waypoints" button. The second step happens when a file is selected, which means the file input has changed. `FileLoader` in JavaScript is used for load the JSON file. After that, the JSON will be converted to array and overwrite the current one.
 
@@ -158,4 +222,4 @@ When using the real robot, protective stops often occur. This is because the rob
 This web-based GUI app is compatible to Universal Robots UR5. However, it may also suitable for any type of 6-axis industrial robots or even any robots that using ROS. This product can be splitted into two parts: common part that is same to all robots, and special part that differs to adapt each robot. When adapting a new type of robot, the common part should not change, while the special part can be copied from sample and modified to fit the data and settings of the new robot.
 
 ### Make good use of Vue.js
-Only part of the code is under Vue.js environment. Putting everything inside the Vue object in app.js file can make good use of Vue.js functionalities and make further coding easier.
+Only part of the code is under Vue.js pattern. Putting everything inside the Vue object in app.js file can make good use of Vue.js functionalities and make further coding easier.
