@@ -230,6 +230,7 @@ According to the result of monitoring the topic `/rosout_agg`, these messages ar
 
 # Conclusion
 ## Project Summary
+This project researched on the posibilities of programming and visualizing an industrial robot using a web application. The work of RobotWebTools and other ROS contributors make it possible, and the effort in this project realizes it. This allows user monitors their robot at anywhere with any device. Currently, most insudtrial robots have their own HCI pattern for programming the robots. The application made in this project also make the unifying the programming language of all types of robots, which can reduce the cost of the enterprises.
 
 ## Unsolved Problems and Further Functionalities
 Because of time limit of the internship, some problems and functions are not solved in the project. The following aspects can be the goals of further project(s) based on this product.
