@@ -1,7 +1,10 @@
 # Introduction
-This project is to build up a control-box web application for an industrial robot with JavaScript, which is to be run in any devices and compatible with any industrial robots.
+This project is to build up a web based graphical user interface (GUI) for an industrial robot with JavaScript, which is to be run in any devices and compatible with any industrial robots.
 
-Universal Robots UR5 is equipped in the labortary so it is used for this project. ...
+Universal Robots UR5 is equipped in the labortary so it is to be used for this project. So the substance of this project is making a web-based GUI for UR5 with functionaity of:
+- Real-time visualization;
+- Moving the robot to predetermined place;
+- Simple programming.
 
 Chapter 2 provides information about the company.
 
@@ -123,22 +126,37 @@ The control panel provides the functionalities of moving 1 step, moving constant
 
 roslibjs is introduced to let the prototype communicate with ROS. It is used to connect the prototype to ROS, subscribe the topics of turtle’s position, publish the topic of move, call the service of clearing field or setting the pen properties, and get or set background color. The prototype also uses `setInterval()` to achieve letting the turtle move constantly by publishing the same topic per every second and stops it by using `clearInterval()` when user clicks “Stop” button.
 
-This prototype was done in the first month of the project period. By working on it, we had a general understanding of ROS and how to use roslibjs to communicate between ROS and the browser, which is helpful for working on further things.
-
 ### Prototype 1: URDF Online Viewer
-This prototype is an application of usage of ros3djs. It presents the status of connected robot by showing its 3D-model in real-time in the browser. 
+This prototype is an application of usage of ros3djs. ros3djs provides a 3D visual of robot in collaboration with THREE.js. In this prototype it was used for showing the 3D-model in order to present the status of connected robot in real-time in the browser.
 
-ros3djs provides a 3D visual of robot in collaboration with THREE.js. 
+First, the connection of ROS is established by roslibjs. Meanwhile, the prototype creates a ROS3d viewer with ros3djs. The id of element, width and height is set when creating it, which will let ros3djs create a main viewer with specific size at the designated element of the webpage. A grid is added into the viewer to make it looks better. Then, a TF client is created for the ROS client with its default preferences. Lastly, the URDF client is created. The ROS client, TF client, path of models and the main viewer is defined in this procedure. Collada Loader in three.js is used for loading the model of UR5.
 
-send a http get request for iframe
+Then main viewer is a seperate web page and is contained with iframe in the main page. When the connection is opened successfully, the prototype will send a http GET request to the main viewer. The main viewer decodes the request with URL of ROS and robot model before loading itself.
+
+Besides, the prototype also provides the value of joints by subscribing `/joint_states` topic which contains the name and the value of all joints of the robot. In the message of the topic, the names and values are separately set in two arrays. These arrays are copied into the data in Vue pattern. With Vue.js these values can be shown in the page easily:
+```html
+<div class="form-group">
+  <label>Joints' State</label>
+  <p v-for="(name, index) in nameJoints">{{name}}: {{valueJoints[index]}}</p>
+</div>
+```
+
+In the code above, `v-for` is used for a for-loop of the `p` element in the webpage with each value and index used in array `nameJoints`. The index of `nameJoints` is used for get the corresponding value of joint in array `valueJoints`.
 
 ### Prototype 2: MoveIt! Web-Based Planner
+The purpose of this prototype is to achieve controlling the robot within the browser.
+
 MoveIt! is a very popular motion planning tool in ROS, which is also used in this project. This prototype lets the browser contact MoveIt! to make movement to the robot.
 
-A similar webapp that already exists is found for this project. However, this webapp could not be used at first. This webapp is called rwt\_moveit, which is part of visualization_rwt created by Tokyo Opensource Robotics Kyokai Assosiation, and based on Denso VS060 industrial robot. We contacted them for the solution of the problem and finally found the way to solve it.
+A similar webapp that already exists is found for this project. This webapp is called rwt\_moveit, which is part of visualization_rwt created by Tokyo Opensource Robotics Kyokai Assosiation, and based on Denso VS060 industrial robot. This application has a webpage and some nodes written in Python. The nodes provides the topic subscription for MoveIt! motion planning. The webpage has full functionality of MoveIt! with:
+- Manipulate start state or goal state
+- Move the robot with interactive marker
+- Plan and execute the motion
+- Change the move group and single joint's value
 
-This application has a webpage and some nodes written in Python. The nodes 
-...
+However, this webapp could not be used at first. We contacted the authors for the solution of the problem, finally found the way to solve it with the help of them and colleagues in the labortary and made the application compatible with UR5.
+
+This prototype reduced the time and workload of researching on the problem, and made more time for developing the final product.
 
 ## Development of Final Product
 The final product was expanded from the prototype 2 with a lot of changes applied on it. The major changes were rebuilding user interfaces, login page, simple programming based on waypoints and response of robot's abnormal stop.
@@ -178,10 +196,18 @@ var viewer = new ROS3D.Viewer({
 viewer.addObject(new ROS3D.Grid({color: '#666666'}));
 ```
 
-### Login (prototype)
+### Login (prototype) and App Loading
 A login page is introduced into this application. It prevents unauthorized personnel from improperly using this application and any personal injury or property damage caused by that.
 
-The code of this part is under Vue.js pattern. That means the inputs of username and password are linked with the related variables and the latter updates when the inputs change. When user clicks “Login and connect” button, It checks if the user exists and the password is correct. Currently, as a prototype, the user data is hard-coded into the script file. If the username and password match, Vue will hide the login interface and show the main interface. Meanwhile, the 
+The code of this part is under Vue.js pattern. That means the inputs of username and password are linked with the related variables and the latter updates when the inputs change. When user clicks “Login and connect” button, It checks if the user exists and the password is correct. Currently, as a prototype, the user data is hard-coded into the script file. If the username and password match, Vue will hide the login interface to show the main interface and establish the connection to ROS at the same time.
+
+During the initialization of the application, the following parts were changed from the prototype.
+
+The start state didn't being used for motion planning in the prototype, which means the model and the interactive marker of start state is useless. But the code of hiding them didn't work. In order to avoid user's confusion, we commented out the code of generating the URDF client and interactive marker of the start state to make them disappear from main viewer. It is also necessary to prevent the errors from removing them.
+
+Manipulator is the only useful move group of UR5. In the prototype, manipulator is not default move group; user should change it to "manipulator" manually, which is inconvenient. Applying `$('select#group').val('manipulator').change();` in the code to let the move group switch to manipulator automatically and trigger the event of the select box to make this change effective. With this action, user will no longer need to change the move group and the select box can be hidden (for UR5).
+
+Since the control of slider changed, the code in `createSliderView()` also changed to fit the new type of slider control.
 
 ### Adding, Going to, Saving and Loading of Waypoints
 When the goal state of MoveIt! planning executed successfully, the “Add Waypoints” button turns enabled and user can click to save the waypoint into the list (array). The array preserves all waypoints user saved. The waypoints will show as buttons with the name of each waypoint. By clicking it, the robot will move to the waypoint immediately. User can also let the robot moves via all waypoints in order by clicking “Run All Waypoints”.
@@ -218,7 +244,7 @@ The login function is just a prototype and there is no user management function 
 The simple programming tool only provide the function of adding the waypoint to the list and save/load the list to/from external file. It can be extended to be more functional by adding waypoints removal and reordering function, simple logical and loop statements and variable operations.
 
 ### Stability of robot motion
-When using the real robot, protective stops often occur. This is because the robot moves too fast and sometimes it misses the target point. To protect the robot, a protective stop is triggered by itself; then the robot is to be unlocked from its HCI. It is necessary to improve the driver module to avoid the robot from moving fast, stopping heavily and triggering protective stops.
+When using the real robot, protective stops often occur. This is because the robot moves too fast and sometimes it misses the target point. To protect the robot, a protective stop is triggered by itself; then the robot is to be unlocked from its HCI. It is necessary to improve the driver module to avoid the robot from moving fast, stopping heavily and triggering protective stops unexpectedly.
 
 ### Compatible with other types of industrial robots
 This web-based GUI app is compatible to Universal Robots UR5. However, it may also suitable for any type of 6-axis industrial robots or even any robots that using ROS. This product can be splitted into two parts: common part that is same to all robots, and special part that differs to adapt each robot. When adapting a new type of robot, the common part should not change, while the special part can be copied from sample and modified to fit the data and settings of the new robot.
