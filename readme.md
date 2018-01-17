@@ -1,5 +1,6 @@
 # UR5 Web GUI
 A Web based GUI for Universal Robots UR5 industrial robot
+![preview](https://i.imgur.com/EXHJglz.png)
 
 ## Functionality
 - Bring the remote of UR5 industrial robot into browser
@@ -14,10 +15,12 @@ A Web based GUI for Universal Robots UR5 industrial robot
 
 ## Installation
 ```sh
-sudo apt-get install ros-$ROS_DISTRO-universal-robot
 sudo apt-get install ros-$ROS_DISTRO-rosbridge-server
+sudo apt-get install ros-$ROS_DISTRO-tf2-web-republisher
+sudo apt-get install ros-$ROS_DISTRO-universal-robot
 cd ~/catkin_ws/src
 git clone https://github.com/ThomasTimm/ur_modern_driver.git
+git clone https://github.com/tork-a/roswww.git
 git clone https://github.com/CRH380B-6216L/rwt_ros.git
 git clone https://github.com/CRH380B-6216L/visualization_rwt.git 
 git clone https://github.com/CRH380B-6216L/ur5_webgui.git 

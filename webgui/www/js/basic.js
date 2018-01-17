@@ -891,7 +891,5 @@ function add_waypoint() {
     new_wp.joints = joint_states.name;
     new_wp.position = joint_states.position;
     waypoints.push(new_wp);
-    $("div#btn-waypoints button").last().remove();
-    $("#btn-waypoints").append('<button type="button" class="btn btn-secondary mr-1" onclick="waypoint(\'' + new_wp.name + '\')">' + new_wp.name + '</button>');
-    $("#btn-waypoints").append('<button type="button" class="btn btn-success mr-1" onclick="run_all_waypoints()">Run All Waypoints</button>');
+    createWaypointButtons();
 }
