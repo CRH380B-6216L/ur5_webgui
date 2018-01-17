@@ -8,14 +8,6 @@ var app = new Vue({
         password: '',
         loginerr: '',
         users: [
-            {
-                "user":"admin",
-                "password":"admin"
-            },
-            {
-                "user":"eru",
-                "password":"chitanda"
-            }
         ]
     },
     methods: {
@@ -76,5 +68,8 @@ var app = new Vue({
     /** Define the default hostname. */
     created() {
         this.address = 'ws://' + location.hostname + ':9090';
+        $.getJSON('/ur5_webgui/data/auth.json', (data) => {
+            users = data;
+        });
     }
 });
