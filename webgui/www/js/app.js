@@ -69,7 +69,7 @@ var app = new Vue({
     created() {
         this.address = 'ws://' + location.hostname + ':9090';
         $.getJSON('/ur5_webgui/data/auth.json', (data) => {
-            users = data;
+            this.users = data;
         });
     }
 });
